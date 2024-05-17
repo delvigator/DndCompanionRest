@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkers App</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+  <header>
+    <div class="header"> Checkers </div>
+
+  </header>
+  <div>
+    <nav class="navigation">
+      <div>
+        <form action="/registration" method="get">
+          <input type="submit" value="Зарегистрироваться"/>
+        </form></div>
+      <div> <a href="index.html"> Главная</a></div>
+      <a href="game.html"> Играть</a>
+      <a href="rules.html"> Правила</a>
+      <a href="recording.html">Запись партий</a>
+    </nav>
+  </div>
+  <div class="helloText">
+    <h1> Добро пожаловать!</h1>
+    <h2> Здесь можно играть с друзьями в шашки</h2>
+    
+    <img th:src="@{/img/catImage.png}"/>
+  </div>
+  <div class="info">
+    <p>© 2023 О.Солопова</p>
+    <p>slpvs2002@gmail.com</p>
+  </div>
+
+
+</body>
+
+</html>

@@ -1,22 +1,24 @@
 package com.example.dndCompanion.services;
 
-import com.example.dndCompanion.dto.CharacterClassDto;
-import com.example.dndCompanion.dto.ClassSkillDto;
-import com.example.dndCompanion.dto.ClassSkillsPerLevelDto;
-import com.example.dndCompanion.dto.ClassSkillsTextDto;
+import com.example.dndCompanion.dto.*;
 import com.example.dndCompanion.entity.*;
 import com.example.dndCompanion.repository.CharacterClassRepository;
-import com.example.dndCompanion.repository.SubRaceRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class CharacterClassService {
-    private final CharacterClassRepository classRepository;
+    @Autowired
+   CharacterClassRepository classRepository;
 
 
     public CharacterClass change(CharacterClass characterClass) {
@@ -28,6 +30,7 @@ public class CharacterClassService {
     }
 
     public List<CharacterClass> getAll() {
+        log.info("getAll");
         return classRepository.findAll();
     }
 
@@ -37,10 +40,10 @@ public class CharacterClassService {
     }
 
     CharacterClass getFromDto(CharacterClassDto dto) {
-        List<ClassSkillsTextDto> classSkillsTextDto = dto.getClassSkillsText();
-        List<ClassSkillsText> classSkillsText = new ArrayList<>();
+        List<ClassSkillsTextDto> classSkillsTextDto = dto.getPeculiarity();
+        List<Peculiarity> classSkillsText = new ArrayList<>();
         for (ClassSkillsTextDto i : classSkillsTextDto) {
-            classSkillsText.add(ClassSkillsText.builder()
+            classSkillsText.add(Peculiarity.builder()
                     .title(i.getTitle())
                     .text(i.getText())
                     .build());
@@ -68,16 +71,14 @@ public class CharacterClassService {
         return CharacterClass.builder()
                 .name(dto.getName())
                 .level(dto.getLevel())
-                .classInfo(ClassInfo.builder()
-                        .description(dto.getClassInfo().getDescription())
-                        .hitDice(dto.getClassInfo().getHitDice())
-                        .saves(dto.getClassInfo().getSaves())
-                        .simpleSkills(dto.getClassInfo().getSimpleSkills())
-                        .startHealth(dto.getClassInfo().getStartHealth())
-                        .numberOfSimpleSkills(dto.getClassInfo().getNumberOfSimpleSkills())
-                        .build())
+                        .description(dto.getDescription())
+                        .hitDice(dto.getHitDice())
+                        .saves(dto.getSaves())
+                        .simpleSkills(dto.getSimpleSkills())
+                        .startHealth(dto.getStartHealth())
+                        .numberOfSimpleSkills(dto.getNumberOfSimpleSkills())
                 .classSkillsPerLevel(classSkillsPerLevel)
-                .classSkillsTexts(classSkillsText)
+                .peculiarity(classSkillsText)
                 .build();
     }
 }

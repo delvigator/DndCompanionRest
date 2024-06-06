@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Builder
@@ -21,14 +23,21 @@ public class CharacterClass {
 
     private String name;
     private Integer level;
+    @Column(columnDefinition = "LONGTEXT")
+    private String description;
+    private Integer hitDice;
+    private Integer startHealth;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private ClassInfo classInfo;
+    @ElementCollection
+    private List<String> saves;
 
+    @ElementCollection
+    private List<String> simpleSkills;
+
+    private Integer numberOfSimpleSkills;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "character_class_id")
+    @JoinColumn(name = "characterClass_id")
     private List<ClassSkillsPerLevel> classSkillsPerLevel;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "character_class_id")
-    private List<ClassSkillsText> classSkillsTexts;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Peculiarity> peculiarity;
 }

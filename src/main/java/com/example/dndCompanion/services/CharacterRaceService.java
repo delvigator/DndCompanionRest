@@ -7,9 +7,8 @@ import com.example.dndCompanion.dto.SubRaceDto;
 import com.example.dndCompanion.entity.CharacterRace;
 import com.example.dndCompanion.entity.Peculiarity;
 import com.example.dndCompanion.entity.SkillMastery;
-import com.example.dndCompanion.entity.SubRace;
+
 import com.example.dndCompanion.repository.CharacterRaceRepository;
-import com.example.dndCompanion.repository.SubRaceRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,7 @@ import java.util.List;
 public class CharacterRaceService {
 
    private final CharacterRaceRepository characterRaceRepository;
-    private  final SubRaceRepository subRaceRepository;
+  //  private  final SubRaceRepository subRaceRepository;
     public List<CharacterRace> getAll(){
         return characterRaceRepository.findAll();
     }
@@ -35,8 +34,8 @@ public class CharacterRaceService {
         return characterRaceRepository.save(characterRace);
     }
     public CharacterRace getFromDto(CharacterRaceDto dto){
-        List<SubRace> subRaces=new ArrayList<>();
-        for( SubRaceDto i :dto.getSubRace()){
+        List<CharacterRace> subRaces=new ArrayList<>();
+        for( CharacterRaceDto i :dto.getSubRace()){
             List<Peculiarity> peculiarities=new ArrayList<>();
             for(PeculiarityDto j: i.getPeculiarities()){
                 peculiarities.add(Peculiarity.builder()
@@ -51,7 +50,8 @@ public class CharacterRaceService {
                                 .mastery(j.isMastery())
                         .build());
             }
-            subRaces.add(SubRace.builder()
+            subRaces.add(CharacterRace.builder()
+                            .isSub(true)
                             .name(i.getName())
                             .description(i.getDescription())
                             .peculiarities(peculiarities)
@@ -59,7 +59,7 @@ public class CharacterRaceService {
                             .skillBoost(i.getSkillBoost())
                     .build());
         }
-        subRaceRepository.saveAll(subRaces);
+        characterRaceRepository.saveAll(subRaces);
 
         List<Peculiarity> peculiarities=new ArrayList<>();
         for(PeculiarityDto j: dto.getPeculiarities()){
@@ -76,6 +76,7 @@ public class CharacterRaceService {
                     .build());
         }
         return CharacterRace.builder()
+                .isSub(false)
                 .name(dto.getName())
                 .numberFeatures(dto.getNumberFeatures())
                 .skillBoost(dto.getSkillBoost())

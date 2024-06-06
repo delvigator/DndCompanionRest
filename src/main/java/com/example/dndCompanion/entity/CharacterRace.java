@@ -24,9 +24,10 @@ public class CharacterRace {
     private int numberFeatures;
     @Column(columnDefinition = "LONGTEXT")
     private String description;
-
+    private boolean isSub;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<SubRace> subRace;
+    @JoinTable(name = "sub_race")
+    private List<CharacterRace> subRace;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Peculiarity> peculiarities;
@@ -35,6 +36,8 @@ public class CharacterRace {
     private List<SkillMastery> skillMastery;
 
     @ElementCollection
+    @Column(name = "skill_boost" )
+    @MapKeyColumn(name = "skill")
     private Map<String, Integer> skillBoost;
 }
 

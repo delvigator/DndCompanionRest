@@ -17,12 +17,12 @@ public class GameCharacterDto {
         private String portrait;
         private CharacterRaceDto chRace;
         private SubRaceDto subRace;
-        private List<CharacterClassDto> chClass;
+        private List<CharacterClass> chClass;
         private String ideology;
-        private List<FeatureDto> features;
+        private List<Feature> features;
         private CharacteristicDto characteristics;
         private CharacterInfoDto characterInfo;
-        private List<SpellDto> knownSpells;
+        private List<Spell> knownSpells;
         private List<ItemInInventoryDto> items;
         private List<NoteDto> notes;
 

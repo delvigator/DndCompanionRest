@@ -16,5 +16,5 @@ public class CharacteristicUnit {
     private String name;
     private int value;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<SkillMastery> skills;
+    private List<SkillMastery> skillMastery;
 }

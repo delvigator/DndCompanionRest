@@ -45,6 +45,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             );
             SecurityContextHolder.getContext().setAuthentication(token);
         }
+        response.setContentType("text/plain; charset=UTF-8");
         filterChain.doFilter(request, response);
     }
 }

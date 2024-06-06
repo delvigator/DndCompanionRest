@@ -15,5 +15,5 @@ import java.util.List;
 public class CharacteristicUnitDto {
     private String name;
     private int value;
-    private List<SkillMasteryDto> skills;
+    private List<SkillMasteryDto> skillMastery;
 }

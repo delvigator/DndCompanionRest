@@ -27,6 +27,7 @@ public class Feature {
     private List<Peculiarity> peculiarities;
 
     @ElementCollection
+    @MapKeyColumn(name = "bonus")
     private Map<String, Integer> bonuses;
 
 }

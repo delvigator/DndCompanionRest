@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -63,7 +64,7 @@ public class AuthService {
                 mailMessage.setTo(authRequest.getUsername());
                 mailMessage.setSubject("Подтверждение регистрации");
                 mailMessage.setText("Для подтверждения регистрации перейдите по ссылке: "
-                        + "http://77.232.138.200/user/confirm/" + token);
+                        + "http://localhost:8080/user/confirm/" + token);
                 mailSender.send(mailMessage);
             }
             userService.findByUsername(authRequest.getUsername()).get().calculateExpiryDate(30);
@@ -90,6 +91,9 @@ public class AuthService {
 //        String decodedRequest = new String(decodedBytes);
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        RegistrationUserDto registrationUserDto = objectMapper.readValue(decodedRequest, RegistrationUserDto.class);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("Content-Type", "text/html; charset=utf-8");
+
         if (!registrationUserDto.getPassword().equals(registrationUserDto.getConfirmPassword())) {
             return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), "Пароли не совпадают"), HttpStatus.BAD_REQUEST);
         }

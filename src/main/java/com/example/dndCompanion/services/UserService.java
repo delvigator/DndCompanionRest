@@ -95,7 +95,7 @@ public User change(User user){
         mailMessage.setFrom("dnd.companion13@gmail.com");
         mailMessage.setSubject("Подтверждение регистрации");
         mailMessage.setText("Для подтверждения регистрации перейдите по ссылке: "
-                + "http://77.232.138.200:8080/user/confirm/"+ token);
+                + "http://localhost:8080/user/confirm/"+ token);
         mailSender.send(mailMessage);
         if(Objects.equals(dto.getUsername(), "admin")) roles.add(Role.ADMIN);
         return userRepository.save(User.builder()
@@ -128,27 +128,3 @@ public User change(User user){
         return userRepository.findByUsername(principal.getName());
     }
 }
-//@Service
-//@Slf4j
-//@Transactional
-//@RequiredArgsConstructor
-//public class UserService {
-//    private final UserRepository userRepository;
-//   // private final PasswordEncoder passwordEncoder;
-//
-//    public boolean createUser(User user) {
-//        log.info("called create user");
-//        String username = user.getUsername();
-//        if (userRepository.findByUsername(username)!= null) return false;
-//        user.setActive(true);
-//        user.setPassword(user.getPassword());
-//        user.getRoles().add(Role.ROLE_USER);
-//        log.info("Saving new User with username: {}", username);
-//        userRepository.save(user);
-//        return true;
-//    }
-//    public User getUserByPrincipal(Principal principal) {
-//        if (principal == null) return new User();
-//        return userRepository.findByUsername(principal.getName());
-//    }
-//}

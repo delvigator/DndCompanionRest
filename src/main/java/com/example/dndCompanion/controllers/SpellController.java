@@ -6,6 +6,7 @@ import com.example.dndCompanion.entity.Item;
 import com.example.dndCompanion.entity.Spell;
 import com.example.dndCompanion.services.SpellService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,8 @@ import java.util.List;
 @RequestMapping("/spells")
 @AllArgsConstructor
 public class SpellController {
-    private final SpellService spellService;
+    @Autowired
+    SpellService spellService;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<Spell>> readAll() {

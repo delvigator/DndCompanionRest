@@ -4,6 +4,7 @@ import com.example.dndCompanion.entity.CharacterClass;
 import com.example.dndCompanion.dto.CharacterClassDto;
 import com.example.dndCompanion.services.CharacterClassService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,8 @@ import java.util.List;
 @RequestMapping("/classes")
 @AllArgsConstructor
 public class CharacterClassesController {
-    private final CharacterClassService characterClassService;
+    @Autowired
+     CharacterClassService characterClassService;
     @GetMapping("/getAll")
     public ResponseEntity<List<CharacterClass>> readAll() {
         return new ResponseEntity<>(characterClassService.getAll(), HttpStatus.OK);

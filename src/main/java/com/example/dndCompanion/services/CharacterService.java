@@ -25,43 +25,66 @@ public class CharacterService {
     private final CharacterClassRepository classRepository;
     private final CharacterRaceRepository characterRaceRepository;
     private final FeatureRepository featureRepository;
-    private final SubRaceRepository subRaceRepository;
+    //  private final SubRaceRepository subRaceRepository;
     private final UserService userService;
+    private final ItemRepository itemRepository;
 
     public List<GameCharacter> getAllByUser(String username) {
-        List<GameCharacter> characters=characterRepository.findAll();
-        List<GameCharacter> result=new ArrayList<>();
-        for(GameCharacter character:characters){
-            if(userService.findByUsername(username).isPresent() && username.equals(character.getUserName()))
-            { result.add(character);}
+        List<GameCharacter> characters = characterRepository.findAll();
+        List<GameCharacter> result = new ArrayList<>();
+        for (GameCharacter character : characters) {
+            if (userService.findByUsername(username).isPresent() && username.equals(character.getUserName())) {
+                result.add(character);
+            }
         }
         return result;
     }
-    public List<GameCharacter> getAllByUser(Principal principal) {
-        List<GameCharacter> characters=characterRepository.findAll();
-        List<GameCharacter> result=new ArrayList<>();
-        for(GameCharacter character:characters){
-            if(userService.getUserByPrincipal(principal).getUsername().equals(character.getUserName()))
-            { result.add(character);}
-        }
-        return result;
-    }
-public HttpStatus change(GameCharacter character, Principal principal){
-        character.setUserName(userService.getUserByPrincipal(principal).getUsername());
-    characterRepository.save(character);
-        return HttpStatus.OK;
-}
-public void delete(Long id,Principal principal){
-        if(userService.getUserByPrincipal(principal).getUsername().equals(characterRepository.getById(id).getUserName()))
-        {characterRepository.deleteById(id);}
-}
 
-    public GameCharacter create(GameCharacterDto dto,Principal principal) {
+    public List<GameCharacter> getAllByUser(Principal principal) {
+        List<GameCharacter> characters = characterRepository.findAll();
+        List<GameCharacter> result = new ArrayList<>();
+        for (GameCharacter character : characters) {
+            if (userService.getUserByPrincipal(principal).getUsername().equals(character.getUserName())) {
+                result.add(character);
+            }
+        }
+        return result;
+    }
+
+    public HttpStatus change(GameCharacter character, Principal principal) {
+        character.setUserName(userService.getUserByPrincipal(principal).getUsername());
+        List<GameCharacter> list = getAllByUser(principal);
+        for (GameCharacter i : list) {
+            if (i.getName().equals(character.getName())) {
+                character.setId(i.getId());
+                characterRepository.save(character);
+
+            }
+        }
+        return HttpStatus.OK;
+    }
+
+    public void delete(Long id, Principal principal) {
+        if (userService.getUserByPrincipal(principal).getUsername().equals(characterRepository.getById(id).getUserName())) {
+            characterRepository.deleteById(id);
+        }
+    }
+
+    public void deleteAll(Principal principal) {
+        List<GameCharacter> list = getAllByUser(principal);
+        for (GameCharacter i : list) {
+            characterRepository.deleteById(i.getId());
+        }
+
+    }
+
+    public GameCharacter create(GameCharacterDto dto, Principal principal) {
+        log.info(dto.toString());
         CharacterInfoDto characterInfoDto = dto.getCharacterInfo();
         List<CharacteristicUnit> characteristicUnits = new ArrayList<>();
         for (CharacteristicUnitDto i : dto.getCharacteristics().getCharacteristicsList()) {
             List<SkillMastery> skills = new ArrayList<>();
-            for (SkillMasteryDto j : i.getSkills()) {
+            for (SkillMasteryDto j : i.getSkillMastery()) {
                 skills.add(SkillMastery.builder()
                         .name(j.getName())
                         .mastery(j.isMastery())
@@ -70,7 +93,7 @@ public void delete(Long id,Principal principal){
             characteristicUnits.add(CharacteristicUnit.builder()
                     .value(i.getValue())
                     .name(i.getName())
-                    .skills(skills)
+                    .skillMastery(skills)
                     .build());
         }
         Characteristic characteristic = Characteristic.builder()
@@ -82,14 +105,7 @@ public void delete(Long id,Principal principal){
             itemsInInventory.add(ItemInInventory.builder()
                     .equip(i.isEquip())
                     .number(i.getNumber())
-                    .item(Item.builder()
-                            .type(i.getItem().getType())
-                            .description(i.getItem().getDescription())
-                            .equipable(i.getItem().isEquipable())
-                            .rarity(i.getItem().getRarity())
-                            .weight(i.getItem().getWeight())
-                            .name(i.getItem().getName())
-                            .build())
+                    .item(i.getItem())
                     .build());
         }
         List<Note> notes = new ArrayList<>();
@@ -101,30 +117,15 @@ public void delete(Long id,Principal principal){
                     .build());
         }
         List<CharacterClass> classes = new ArrayList<>();
-        for (CharacterClassDto i : dto.getChClass()) {
+        for (CharacterClass i : dto.getChClass()) {
             classes.add(classRepository.findByName(i.getName()));
         }
-        List<Feature> features = new ArrayList<>();
-        for (FeatureDto i : dto.getFeatures()) {
-            features.add(featureRepository.findByName(i.getName()));
-        }
-        List<Spell> spells = new ArrayList<>();
-        for (SpellDto i : dto.getKnownSpells()) {
-            spells.add(Spell.builder()
-                            .name(i.getName())
-                            .classes(i.getClasses())
-                            .level(i.getLevel())
-                            .description(i.getDescription())
-                            .school(i.getSchool())
-                            .distance(i.getDistance())
-                            .isRitual(i.isRitual())
-                            .spellComponents(i.getSpellComponents())
-                            .timeAction(i.getTimeAction())
-                            .timeApplication(i.getTimeApplication())
-                                    .build());
-        }
+        List<Feature> features = dto.getFeatures();
+
+        List<Spell> spells = dto.getKnownSpells();
+
         log.info(userService.getUserByPrincipal(principal).getUsername());
-        GameCharacter character= GameCharacter.builder()
+        GameCharacter character = GameCharacter.builder()
                 .userName(userService.getUserByPrincipal(principal).getUsername())
                 .name(dto.getName())
                 .level(dto.getLevel())
@@ -149,8 +150,9 @@ public void delete(Long id,Principal principal){
                 .ideology(dto.getIdeology())
                 .portrait(dto.getPortrait())
                 .build();
-        if(dto.getSubRace()!=null) character.setSubRace(subRaceRepository.findByName(dto.getSubRace().getName()));
+        if (dto.getSubRace() != null)
+            character.setSubRace(characterRaceRepository.findByName(dto.getSubRace().getName()));
         characterRepository.save(character);
-        return  character;
+        return character;
     }
 }

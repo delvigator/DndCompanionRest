@@ -6,6 +6,7 @@ import com.example.dndCompanion.entity.Feature;
 import com.example.dndCompanion.entity.Peculiarity;
 import com.example.dndCompanion.repository.FeatureRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,7 +15,8 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class FeatureService {
-  private final  FeatureRepository featureRepository;
+    @Autowired
+   FeatureRepository featureRepository;
 
     public List<Feature> getAll(){
         return featureRepository.findAll();
